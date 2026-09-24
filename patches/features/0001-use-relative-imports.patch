@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Alpha <dev@alpha93.kr>
 Date: Thu, 24 Sep 2026 16:35:46 +0900
-Subject: [PATCH] use relative imports
+Subject: [PATCH 1/3] use relative imports
 
 Signed-off-by: Alpha <dev@alpha93.kr>
 
@@ -28,19 +28,6 @@ index 9491f8b..ace436a 100644
  
  ExceptionHandlers = dict[Any, ExceptionHandler]
  StatusHandlers = dict[int, ExceptionHandler]
-diff --git a/starlette/_utils.py b/starlette/_utils.py
-index fab4716..9141026 100644
---- a/starlette/_utils.py
-+++ b/starlette/_utils.py
-@@ -9,7 +9,7 @@ from typing import Any, Generic, Protocol, TypeVar, overload
- 
- import anyio.abc
- 
--from starlette.types import Scope
-+from .types import Scope
- 
- if sys.version_info >= (3, 13):  # pragma: no cover
-     from typing import TypeIs
 diff --git a/starlette/applications.py b/starlette/applications.py
 index f3e26bc..a3579d0 100644
 --- a/starlette/applications.py
@@ -388,23 +375,6 @@ index d86ddb0..a9a6730 100644
  
  
  class NoMatchFound(Exception):
-diff --git a/starlette/schemas.py b/starlette/schemas.py
-index cf7d439..337246b 100644
---- a/starlette/schemas.py
-+++ b/starlette/schemas.py
-@@ -5,9 +5,9 @@ import re
- from collections.abc import Callable
- from typing import Any, NamedTuple
- 
--from starlette.requests import Request
--from starlette.responses import Response
--from starlette.routing import BaseRoute, Host, Mount, Route
-+from .requests import Request
-+from .responses import Response
-+from .routing import BaseRoute, Host, Mount, Route
- 
- try:
-     import yaml
 diff --git a/starlette/staticfiles.py b/starlette/staticfiles.py
 index ac39acc..ed36819 100644
 --- a/starlette/staticfiles.py

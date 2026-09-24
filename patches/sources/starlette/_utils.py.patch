@@ -1,25 +1,36 @@
 diff --git a/starlette/_utils.py b/starlette/_utils.py
-index b9b8639..fab4716 100644
+index b9b8639..09a7fac 100644
 --- a/starlette/_utils.py
 +++ b/starlette/_utils.py
-@@ -4,6 +4,7 @@ import functools
- import sys
- from collections.abc import AsyncGenerator, Awaitable, Callable, Generator
- from contextlib import AbstractAsyncContextManager, asynccontextmanager
+@@ -1,67 +1,38 @@
+ from __future__ import annotations
+ 
+ import functools
+-import sys
+-from collections.abc import AsyncGenerator, Awaitable, Callable, Generator
+-from contextlib import AbstractAsyncContextManager, asynccontextmanager
+-from typing import Any, Generic, Protocol, TypeVar, overload
++from contextlib import asynccontextmanager
 +from inspect import iscoroutinefunction
- from typing import Any, Generic, Protocol, TypeVar, overload
  
  import anyio.abc
-@@ -11,21 +12,10 @@ import anyio.abc
- from starlette.types import Scope
  
- if sys.version_info >= (3, 13):  # pragma: no cover
+-from starlette.types import Scope
++if __debug__ and __import__("typing").TYPE_CHECKING:
++    from collections.abc import AsyncGenerator, Awaitable, Generator
++    from contextlib import AbstractAsyncContextManager
++    from types import TracebackType
++    from typing import Any, Protocol, TypeVar
+ 
+-if sys.version_info >= (3, 13):  # pragma: no cover
 -    from inspect import iscoroutinefunction
-     from typing import TypeIs
- else:  # pragma: no cover
+-    from typing import TypeIs
+-else:  # pragma: no cover
 -    from asyncio import iscoroutinefunction
--
-     from typing_extensions import TypeIs
++    from .types import Scope
+ 
+-    from typing_extensions import TypeIs
++    __T_co = TypeVar("__T_co", covariant=True)
  
 -if sys.version_info < (3, 11):  # pragma: no cover
 -    try:
@@ -29,6 +40,67 @@ index b9b8639..fab4716 100644
 -        class BaseExceptionGroup(BaseException):  # type: ignore[no-redef]
 -            pass
 -
+-
+-T = TypeVar("T")
+-AwaitableCallable = Callable[..., Awaitable[T]]
++    class AwaitableOrContextManager(
++        Awaitable[__T_co], AbstractAsyncContextManager[__T_co], Protocol[__T_co]
++    ): ...  # pragma: no branch
  
- T = TypeVar("T")
- AwaitableCallable = Callable[..., Awaitable[T]]
++    class SupportsAsyncClose(Protocol):
++        async def close(self) -> None: ...  # pragma: no cover
+ 
+-@overload
+-def is_async_callable(obj: AwaitableCallable[T]) -> TypeIs[AwaitableCallable[T]]: ...
+ 
+-
+-@overload
+-def is_async_callable(obj: Any) -> TypeIs[AwaitableCallable[Any]]: ...
+-
+-
+-def is_async_callable(obj: Any) -> Any:
++def is_async_callable(obj):
+     while isinstance(obj, functools.partial):
+         obj = obj.func
+ 
+     return iscoroutinefunction(obj) or (callable(obj) and iscoroutinefunction(obj.__call__))
+ 
+ 
+-T_co = TypeVar("T_co", covariant=True)
+-
+-
+-class AwaitableOrContextManager(
+-    Awaitable[T_co], AbstractAsyncContextManager[T_co], Protocol[T_co]
+-): ...  # pragma: no branch
+-
+-
+-class SupportsAsyncClose(Protocol):
+-    async def close(self) -> None: ...  # pragma: no cover
+-
+-
+-SupportsAsyncCloseType = TypeVar("SupportsAsyncCloseType", bound=SupportsAsyncClose, covariant=False)
+-
+-
+-class AwaitableOrContextManagerWrapper(Generic[SupportsAsyncCloseType]):
++# noinspection dunder-slots,unresolved-references
++class AwaitableOrContextManagerWrapper[SupportsAsyncCloseType: SupportsAsyncClose]:
+     __slots__ = ("aw", "entered")
+ 
+     def __init__(self, aw: Awaitable[SupportsAsyncCloseType]) -> None:
+@@ -74,13 +45,13 @@ class AwaitableOrContextManagerWrapper(Generic[SupportsAsyncCloseType]):
+         self.entered = await self.aw
+         return self.entered
+ 
+-    async def __aexit__(self, *args: Any) -> None | bool:
++    async def __aexit__(self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None):
+         await self.entered.close()
+-        return None
+ 
+ 
++# noinspection bad-return
+ @asynccontextmanager
+-async def create_collapsing_task_group() -> AsyncGenerator[anyio.abc.TaskGroup, None]:
++async def create_collapsing_task_group() -> AsyncGenerator[anyio.abc.TaskGroup, Any]:
+     try:
+         async with anyio.create_task_group() as tg:
+             yield tg
