@@ -1,0 +1,462 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Alpha <dev@alpha93.kr>
+Date: Thu, 24 Sep 2026 16:35:46 +0900
+Subject: [PATCH] use relative imports
+
+Signed-off-by: Alpha <dev@alpha93.kr>
+
+diff --git a/starlette/_exception_handler.py b/starlette/_exception_handler.py
+index 9491f8b..ace436a 100644
+--- a/starlette/_exception_handler.py
++++ b/starlette/_exception_handler.py
+@@ -2,12 +2,12 @@ from __future__ import annotations
+ 
+ from typing import Any
+ 
+-from starlette._utils import is_async_callable
+-from starlette.concurrency import run_in_threadpool
+-from starlette.exceptions import HTTPException
+-from starlette.requests import Request
+-from starlette.types import ASGIApp, ExceptionHandler, Message, Receive, Scope, Send
+-from starlette.websockets import WebSocket
++from ._utils import is_async_callable
++from .concurrency import run_in_threadpool
++from .exceptions import HTTPException
++from .requests import Request
++from .types import ASGIApp, ExceptionHandler, Message, Receive, Scope, Send
++from .websockets import WebSocket
+ 
+ ExceptionHandlers = dict[Any, ExceptionHandler]
+ StatusHandlers = dict[int, ExceptionHandler]
+diff --git a/starlette/_utils.py b/starlette/_utils.py
+index fab4716..9141026 100644
+--- a/starlette/_utils.py
++++ b/starlette/_utils.py
+@@ -9,7 +9,7 @@ from typing import Any, Generic, Protocol, TypeVar, overload
+ 
+ import anyio.abc
+ 
+-from starlette.types import Scope
++from .types import Scope
+ 
+ if sys.version_info >= (3, 13):  # pragma: no cover
+     from typing import TypeIs
+diff --git a/starlette/applications.py b/starlette/applications.py
+index f3e26bc..a3579d0 100644
+--- a/starlette/applications.py
++++ b/starlette/applications.py
+@@ -3,15 +3,15 @@ from __future__ import annotations
+ from collections.abc import Awaitable, Callable, Mapping, Sequence
+ from typing import Any, ParamSpec, TypeVar
+ 
+-from starlette.datastructures import State, URLPath
+-from starlette.middleware import Middleware, _MiddlewareFactory
+-from starlette.middleware.body_limit import RequestBodyLimitMiddleware
+-from starlette.middleware.errors import ServerErrorMiddleware
+-from starlette.middleware.exceptions import ExceptionMiddleware
+-from starlette.requests import Request
+-from starlette.responses import Response
+-from starlette.routing import BaseRoute, Router
+-from starlette.types import ASGIApp, ExceptionHandler, Lifespan, Receive, Scope, Send
++from .datastructures import State, URLPath
++from .middleware import Middleware, _MiddlewareFactory
++from .middleware.body_limit import RequestBodyLimitMiddleware
++from .middleware.errors import ServerErrorMiddleware
++from .middleware.exceptions import ExceptionMiddleware
++from .requests import Request
++from .responses import Response
++from .routing import BaseRoute, Router
++from .types import ASGIApp, ExceptionHandler, Lifespan, Receive, Scope, Send
+ 
+ AppType = TypeVar("AppType", bound="Starlette")
+ P = ParamSpec("P")
+diff --git a/starlette/authentication.py b/starlette/authentication.py
+index 63c4da0..0f738c8 100644
+--- a/starlette/authentication.py
++++ b/starlette/authentication.py
+@@ -6,11 +6,11 @@ from collections.abc import Callable, Sequence
+ from typing import Any, ParamSpec
+ from urllib.parse import urlencode
+ 
+-from starlette._utils import is_async_callable
+-from starlette.exceptions import HTTPException
+-from starlette.requests import HTTPConnection, Request
+-from starlette.responses import RedirectResponse
+-from starlette.websockets import WebSocket
++from ._utils import is_async_callable
++from .exceptions import HTTPException
++from .requests import HTTPConnection, Request
++from .responses import RedirectResponse
++from .websockets import WebSocket
+ 
+ _P = ParamSpec("_P")
+ 
+diff --git a/starlette/background.py b/starlette/background.py
+index 55135ee..0c47621 100644
+--- a/starlette/background.py
++++ b/starlette/background.py
+@@ -3,8 +3,8 @@ from __future__ import annotations
+ from collections.abc import Callable, Sequence
+ from typing import Any, ParamSpec
+ 
+-from starlette._utils import is_async_callable
+-from starlette.concurrency import run_in_threadpool
++from ._utils import is_async_callable
++from .concurrency import run_in_threadpool
+ 
+ P = ParamSpec("P")
+ 
+diff --git a/starlette/concurrency.py b/starlette/concurrency.py
+index a2c55be..dad1c7e 100644
+--- a/starlette/concurrency.py
++++ b/starlette/concurrency.py
+@@ -7,7 +7,7 @@ from typing import ParamSpec, TypeVar
+ 
+ import anyio.to_thread
+ 
+-from starlette.exceptions import StarletteDeprecationWarning
++from .exceptions import StarletteDeprecationWarning
+ 
+ P = ParamSpec("P")
+ T = TypeVar("T")
+diff --git a/starlette/datastructures.py b/starlette/datastructures.py
+index 33ecb1b..c5e0d46 100644
+--- a/starlette/datastructures.py
++++ b/starlette/datastructures.py
+@@ -6,8 +6,8 @@ from shlex import shlex
+ from typing import Any, BinaryIO, Literal, NamedTuple, TypeVar, cast
+ from urllib.parse import SplitResult, parse_qsl, urlencode, urlsplit
+ 
+-from starlette.concurrency import run_in_threadpool
+-from starlette.types import Scope
++from .concurrency import run_in_threadpool
++from .types import Scope
+ 
+ 
+ class Address(NamedTuple):
+diff --git a/starlette/formparsers.py b/starlette/formparsers.py
+index 88862f7..8981bf1 100644
+--- a/starlette/formparsers.py
++++ b/starlette/formparsers.py
+@@ -7,7 +7,7 @@ from tempfile import SpooledTemporaryFile
+ from typing import TYPE_CHECKING
+ from urllib.parse import unquote_plus
+ 
+-from starlette.datastructures import FormData, Headers, UploadFile
++from .datastructures import FormData, Headers, UploadFile
+ 
+ if TYPE_CHECKING:
+     import python_multipart as multipart
+diff --git a/starlette/middleware/authentication.py b/starlette/middleware/authentication.py
+index 935385f..4bf8e98 100644
+--- a/starlette/middleware/authentication.py
++++ b/starlette/middleware/authentication.py
+@@ -2,15 +2,15 @@ from __future__ import annotations
+ 
+ from collections.abc import Callable
+ 
+-from starlette.authentication import (
++from ..authentication import (
+     AuthCredentials,
+     AuthenticationBackend,
+     AuthenticationError,
+     UnauthenticatedUser,
+ )
+-from starlette.requests import HTTPConnection
+-from starlette.responses import PlainTextResponse, Response
+-from starlette.types import ASGIApp, Receive, Scope, Send
++from ..requests import HTTPConnection
++from ..responses import PlainTextResponse, Response
++from ..types import ASGIApp, Receive, Scope, Send
+ 
+ 
+ class AuthenticationMiddleware:
+diff --git a/starlette/middleware/base.py b/starlette/middleware/base.py
+index 2579c03..77d83ff 100644
+--- a/starlette/middleware/base.py
++++ b/starlette/middleware/base.py
+@@ -5,10 +5,10 @@ from typing import Any, TypeVar
+ 
+ import anyio
+ 
+-from starlette._utils import create_collapsing_task_group
+-from starlette.requests import ClientDisconnect, Request
+-from starlette.responses import Response
+-from starlette.types import ASGIApp, Message, Receive, Scope, Send
++from .._utils import create_collapsing_task_group
++from ..requests import ClientDisconnect, Request
++from ..responses import Response
++from ..types import ASGIApp, Message, Receive, Scope, Send
+ 
+ RequestResponseEndpoint = Callable[[Request], Awaitable[Response]]
+ DispatchFunction = Callable[[Request, RequestResponseEndpoint], Awaitable[Response]]
+diff --git a/starlette/middleware/body_limit.py b/starlette/middleware/body_limit.py
+index 159c70d..3a22b4b 100644
+--- a/starlette/middleware/body_limit.py
++++ b/starlette/middleware/body_limit.py
+@@ -2,10 +2,10 @@ from __future__ import annotations
+ 
+ from typing import cast
+ 
+-from starlette.datastructures import Headers
+-from starlette.exceptions import HTTPException
+-from starlette.responses import PlainTextResponse
+-from starlette.types import ASGIApp, Message, Receive, Scope, Send
++from ..datastructures import Headers
++from ..exceptions import HTTPException
++from ..responses import PlainTextResponse
++from ..types import ASGIApp, Message, Receive, Scope, Send
+ 
+ MAX_BODY_SIZE_SCOPE_KEY = "starlette.max_body_size"
+ _BODY_LIMIT_RESPONDER_SCOPE_KEY = "starlette._body_limit_responder"
+diff --git a/starlette/middleware/cors.py b/starlette/middleware/cors.py
+index b65fc15..f89a561 100644
+--- a/starlette/middleware/cors.py
++++ b/starlette/middleware/cors.py
+@@ -4,9 +4,9 @@ import functools
+ import re
+ from collections.abc import Sequence
+ 
+-from starlette.datastructures import Headers, MutableHeaders
+-from starlette.responses import PlainTextResponse, Response
+-from starlette.types import ASGIApp, Message, Receive, Scope, Send
++from ..datastructures import Headers, MutableHeaders
++from ..responses import PlainTextResponse, Response
++from ..types import ASGIApp, Message, Receive, Scope, Send
+ 
+ ALL_METHODS = ("DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT")
+ SAFELISTED_HEADERS = {"Accept", "Accept-Language", "Content-Language", "Content-Type"}
+diff --git a/starlette/middleware/exceptions.py b/starlette/middleware/exceptions.py
+index 6c98558..998c75d 100644
+--- a/starlette/middleware/exceptions.py
++++ b/starlette/middleware/exceptions.py
+@@ -3,16 +3,16 @@ from __future__ import annotations
+ from collections.abc import Mapping
+ from typing import Any
+ 
+-from starlette._exception_handler import (
++from .._exception_handler import (
+     ExceptionHandlers,
+     StatusHandlers,
+     wrap_app_handling_exceptions,
+ )
+-from starlette.exceptions import HTTPException, WebSocketException
+-from starlette.requests import Request
+-from starlette.responses import PlainTextResponse, Response
+-from starlette.types import ASGIApp, ExceptionHandler, Receive, Scope, Send
+-from starlette.websockets import WebSocket
++from ..exceptions import HTTPException, WebSocketException
++from ..requests import Request
++from ..responses import PlainTextResponse, Response
++from ..types import ASGIApp, ExceptionHandler, Receive, Scope, Send
++from ..websockets import WebSocket
+ 
+ 
+ class ExceptionMiddleware:
+diff --git a/starlette/middleware/gzip.py b/starlette/middleware/gzip.py
+index 4473f5a..effc568 100644
+--- a/starlette/middleware/gzip.py
++++ b/starlette/middleware/gzip.py
+@@ -6,8 +6,8 @@ from typing import NoReturn
+ import anyio.lowlevel
+ import anyio.to_thread
+ 
+-from starlette.datastructures import Headers, MutableHeaders
+-from starlette.types import ASGIApp, Message, Receive, Scope, Send
++from ..datastructures import Headers, MutableHeaders
++from ..types import ASGIApp, Message, Receive, Scope, Send
+ 
+ # TODO(v2): We should rename `DEFAULT_EXCLUDED_CONTENT_TYPES` to `DEFAULT_EXCLUDE_CONTENT_TYPES`.
+ DEFAULT_EXCLUDED_CONTENT_TYPES = (
+diff --git a/starlette/middleware/httpsredirect.py b/starlette/middleware/httpsredirect.py
+index a835906..fb7b2d6 100644
+--- a/starlette/middleware/httpsredirect.py
++++ b/starlette/middleware/httpsredirect.py
+@@ -1,6 +1,6 @@
+-from starlette.datastructures import URL
+-from starlette.responses import RedirectResponse
+-from starlette.types import ASGIApp, Receive, Scope, Send
++from ..datastructures import URL
++from ..responses import RedirectResponse
++from ..types import ASGIApp, Receive, Scope, Send
+ 
+ 
+ class HTTPSRedirectMiddleware:
+diff --git a/starlette/middleware/trustedhost.py b/starlette/middleware/trustedhost.py
+index 98451e2..3c63b85 100644
+--- a/starlette/middleware/trustedhost.py
++++ b/starlette/middleware/trustedhost.py
+@@ -2,9 +2,9 @@ from __future__ import annotations
+ 
+ from collections.abc import Sequence
+ 
+-from starlette.datastructures import URL, Headers
+-from starlette.responses import PlainTextResponse, RedirectResponse, Response
+-from starlette.types import ASGIApp, Receive, Scope, Send
++from ..datastructures import URL, Headers
++from ..responses import PlainTextResponse, RedirectResponse, Response
++from ..types import ASGIApp, Receive, Scope, Send
+ 
+ ENFORCE_DOMAIN_WILDCARD = "Domain wildcard patterns must be like '*.example.com'."
+ 
+diff --git a/starlette/requests.py b/starlette/requests.py
+index d4f3f4b..24bba07 100644
+--- a/starlette/requests.py
++++ b/starlette/requests.py
+@@ -8,18 +8,18 @@ from typing import TYPE_CHECKING, Any, Generic, NoReturn, cast
+ 
+ import anyio
+ 
+-from starlette._utils import AwaitableOrContextManager, AwaitableOrContextManagerWrapper
+-from starlette.datastructures import URL, Address, FormData, Headers, QueryParams, State
+-from starlette.exceptions import HTTPException
+-from starlette.formparsers import FormParser, MultiPartException, MultiPartParser
+-from starlette.types import Message, Receive, Scope, Send
++from ._utils import AwaitableOrContextManager, AwaitableOrContextManagerWrapper
++from .datastructures import URL, Address, FormData, Headers, QueryParams, State
++from .exceptions import HTTPException
++from .formparsers import FormParser, MultiPartException, MultiPartParser
++from .types import Message, Receive, Scope, Send
+ 
+ if TYPE_CHECKING:
+     from python_multipart.multipart import parse_options_header
+ 
+-    from starlette.applications import Starlette
+-    from starlette.middleware.sessions import Session
+-    from starlette.routing import Router
++    from .applications import Starlette
++    from .middleware.sessions import Session
++    from .routing import Router
+ else:
+     try:
+         try:
+diff --git a/starlette/responses.py b/starlette/responses.py
+index 47b698e..8d1fa6b 100644
+--- a/starlette/responses.py
++++ b/starlette/responses.py
+@@ -18,12 +18,12 @@ from urllib.parse import quote
+ import anyio
+ import anyio.to_thread
+ 
+-from starlette._utils import create_collapsing_task_group
+-from starlette.background import BackgroundTask
+-from starlette.concurrency import iterate_in_threadpool
+-from starlette.datastructures import URL, Headers, MutableHeaders
+-from starlette.requests import ClientDisconnect
+-from starlette.types import Message, Receive, Scope, Send
++from ._utils import create_collapsing_task_group
++from .background import BackgroundTask
++from .concurrency import iterate_in_threadpool
++from .datastructures import URL, Headers, MutableHeaders
++from .requests import ClientDisconnect
++from .types import Message, Receive, Scope, Send
+ 
+ 
+ class Response:
+diff --git a/starlette/routing.py b/starlette/routing.py
+index d86ddb0..a9a6730 100644
+--- a/starlette/routing.py
++++ b/starlette/routing.py
+@@ -13,18 +13,18 @@ from enum import Enum
+ from re import Pattern
+ from typing import Any, TypeVar
+ 
+-from starlette._exception_handler import wrap_app_handling_exceptions
+-from starlette._utils import get_route_path, is_async_callable
+-from starlette.concurrency import run_in_threadpool
+-from starlette.convertors import CONVERTOR_TYPES, Convertor
+-from starlette.datastructures import URL, Headers, URLPath
+-from starlette.exceptions import HTTPException, StarletteDeprecationWarning
+-from starlette.middleware import Middleware
+-from starlette.middleware.body_limit import RequestBodyLimitMiddleware
+-from starlette.requests import Request
+-from starlette.responses import PlainTextResponse, RedirectResponse, Response
+-from starlette.types import ASGIApp, Lifespan, Receive, Scope, Send
+-from starlette.websockets import WebSocket, WebSocketClose
++from ._exception_handler import wrap_app_handling_exceptions
++from ._utils import get_route_path, is_async_callable
++from .concurrency import run_in_threadpool
++from .convertors import CONVERTOR_TYPES, Convertor
++from .datastructures import URL, Headers, URLPath
++from .exceptions import HTTPException, StarletteDeprecationWarning
++from .middleware import Middleware
++from .middleware.body_limit import RequestBodyLimitMiddleware
++from .requests import Request
++from .responses import PlainTextResponse, RedirectResponse, Response
++from .types import ASGIApp, Lifespan, Receive, Scope, Send
++from .websockets import WebSocket, WebSocketClose
+ 
+ 
+ class NoMatchFound(Exception):
+diff --git a/starlette/schemas.py b/starlette/schemas.py
+index cf7d439..337246b 100644
+--- a/starlette/schemas.py
++++ b/starlette/schemas.py
+@@ -5,9 +5,9 @@ import re
+ from collections.abc import Callable
+ from typing import Any, NamedTuple
+ 
+-from starlette.requests import Request
+-from starlette.responses import Response
+-from starlette.routing import BaseRoute, Host, Mount, Route
++from .requests import Request
++from .responses import Response
++from .routing import BaseRoute, Host, Mount, Route
+ 
+ try:
+     import yaml
+diff --git a/starlette/staticfiles.py b/starlette/staticfiles.py
+index ac39acc..ed36819 100644
+--- a/starlette/staticfiles.py
++++ b/starlette/staticfiles.py
+@@ -10,11 +10,11 @@ from typing import Union
+ import anyio
+ import anyio.to_thread
+ 
+-from starlette._utils import get_route_path
+-from starlette.datastructures import URL, Headers
+-from starlette.exceptions import HTTPException
+-from starlette.responses import FileResponse, RedirectResponse, Response
+-from starlette.types import Receive, Scope, Send
++from ._utils import get_route_path
++from .datastructures import URL, Headers
++from .exceptions import HTTPException
++from .responses import FileResponse, RedirectResponse, Response
++from .types import Receive, Scope, Send
+ 
+ PathLike = Union[str, "os.PathLike[str]"]
+ 
+diff --git a/starlette/types.py b/starlette/types.py
+index b767ae1..7aa7135 100644
+--- a/starlette/types.py
++++ b/starlette/types.py
+@@ -3,9 +3,9 @@ from contextlib import AbstractAsyncContextManager
+ from typing import TYPE_CHECKING, Any, TypeVar
+ 
+ if TYPE_CHECKING:
+-    from starlette.requests import Request
+-    from starlette.responses import Response
+-    from starlette.websockets import WebSocket
++    from .requests import Request
++    from .responses import Response
++    from .websockets import WebSocket
+ 
+ AppType = TypeVar("AppType")
+ 
+diff --git a/starlette/websockets.py b/starlette/websockets.py
+index 3ab709a..34b9e5a 100644
+--- a/starlette/websockets.py
++++ b/starlette/websockets.py
+@@ -5,9 +5,9 @@ import json
+ from collections.abc import AsyncIterator, Iterable
+ from typing import Any, cast
+ 
+-from starlette.requests import HTTPConnection, StateT
+-from starlette.responses import Response
+-from starlette.types import Message, Receive, Scope, Send
++from .requests import HTTPConnection, StateT
++from .responses import Response
++from .types import Message, Receive, Scope, Send
+ 
+ 
+ class WebSocketState(enum.Enum):
