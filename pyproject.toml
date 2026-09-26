@@ -22,12 +22,12 @@ dev = [
 ]
 
 [tool.uv.sources]
-makepatch = { git = "ssh://git@github.com/MadeByAlpha/makepatch.git" }
+makepatch = { git = "https://github.com/MadeByAlpha/makepatch.git" }
 
 [build-system]
 requires = [
     "hatchling",
-    "makepatch @ git+ssh://git@github.com/MadeByAlpha/makepatch.git",
+    "makepatch @ git+https://github.com/MadeByAlpha/makepatch.git",
 ]
 build-backend = "hatchling.build"
 

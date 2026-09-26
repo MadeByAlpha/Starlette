@@ -214,7 +214,7 @@ wheels = [
 [[package]]
 name = "makepatch"
 version = "0.1.0"
-source = { git = "ssh://git@github.com/MadeByAlpha/makepatch.git#a9ac6f221d37aa5d474902986f890926d26d6a3e" }
+source = { git = "https://github.com/MadeByAlpha/makepatch.git#a9ac6f221d37aa5d474902986f890926d26d6a3e" }
 
 [[package]]
 name = "mypy"
@@ -325,7 +325,7 @@ wheels = [
 
 [[package]]
 name = "starlette-minimal"
-version = "0.1.0"
+version = "1.6.0"
 source = { editable = "." }
 dependencies = [
     { name = "alpha93" },
@@ -353,7 +353,7 @@ requires-dist = [
 dev = [
     { name = "alpha93-stubs", specifier = ">=1.2.2" },
     { name = "basedpyright", specifier = ">=1.40.1" },
-    { name = "makepatch", git = "ssh://git@github.com/MadeByAlpha/makepatch.git" },
+    { name = "makepatch", git = "https://github.com/MadeByAlpha/makepatch.git" },
     { name = "mypy", specifier = ">=2.3.1" },
     { name = "ruff", specifier = ">=0.16.8" },
     { name = "ty", specifier = ">=0.0.83" },
