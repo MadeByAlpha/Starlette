@@ -39,6 +39,6 @@ type StatelessLifespan[AppType] = Callable[[AppType], AbstractAsyncContextManage
 type StatefulLifespan[AppType] = Callable[[AppType], AbstractAsyncContextManager[Mapping[str, Any]]]
 type Lifespan[AppType] = StatelessLifespan[AppType] | StatefulLifespan[AppType]
 
-type HTTPExceptionHandler = Callable[[Request, Exception], Response | Awaitable[Response]]
+type HTTPExceptionHandler = Callable[[Request, Exception], Awaitable[Response]]
 type WebSocketExceptionHandler = Callable[[WebSocket, Exception], Awaitable[None]]
 type ExceptionHandler = HTTPExceptionHandler | WebSocketExceptionHandler

@@ -8,24 +8,23 @@ resolution-markers = [
 
 [[package]]
 name = "alpha93"
-version = "1.2.2"
+version = "1.2.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "alpha93-stubs" },
     { name = "terser-hints" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/94/58/2f2276cbb694d516c915fc5e3c174f1832f0144abbca73e20bfa11c94cfc/alpha93-1.2.2.tar.gz", hash = "sha256:519dd616f80aecf767516e1bbcb6dcc720b7ba060c31a7cfa2ce7ece42a18c8c", size = 6565, upload-time = "2026-09-23T03:25:56.732Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/17/78/62290f33e14b61d4a8d03083ec1ac220565f64eb3eb2a8b5811304a8c3de/alpha93-1.2.3.tar.gz", hash = "sha256:4caf7b34addd28817715b27dd8f1cdf7e816fa42a36611f877768e79660f0597", size = 6602, upload-time = "2026-09-25T06:42:19.875Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/01/eb/936f1e774ba694d1a105fc300d19bfa7a385053e6cd8fa2ac2461e616a80/alpha93-1.2.2-py3-none-any.whl", hash = "sha256:3b58d8a63c977542f0570132f897bf5e7798e7d7b58f95cec80199b84446b07f", size = 13680, upload-time = "2026-09-23T03:25:54.256Z" },
+    { url = "https://files.pythonhosted.org/packages/23/ca/883cfc6893b773df1ccf9e5c603f2d6df26cc1a51b1830f7ee7144379c5e/alpha93-1.2.3-py3-none-any.whl", hash = "sha256:3b717e99edc57e44bfa8f2097b2312f6b130cf8bbee5954bbcf071f79276704c", size = 13668, upload-time = "2026-09-25T06:42:17.478Z" },
 ]
 
 [[package]]
 name = "alpha93-stubs"
-version = "1.2.2"
+version = "1.2.3"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/0f/7b/e6c52c322c27edb8873017d98285249fbdf7b3186e373462d58398ae617b/alpha93_stubs-1.2.2.tar.gz", hash = "sha256:818d8866f853e85b0e2962756d0b5c2f5503d02a5702f9d78a34aa03b7b45f37", size = 1875, upload-time = "2026-09-23T03:25:57.425Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a9/87/f5ee73e2380792fa0ea17b5dc294f9cad3d8c173aaa38608276b266f23a2/alpha93_stubs-1.2.3.tar.gz", hash = "sha256:32e6181ce084ae34829ceb3e91979876ee8168fdfd9ee9ca3171e1bfa80dd319", size = 1896, upload-time = "2026-09-25T06:42:20.704Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4d/96/c6f43f6bddbdbfdc58cbd14f9ec5a97266426b6d835879ddb6996ae8de7b/alpha93_stubs-1.2.2-py3-none-any.whl", hash = "sha256:0f570dace153d14b3f49549d8bfc25292441e65e1244e8ca40caa9b9c922c0d5", size = 3010, upload-time = "2026-09-23T03:25:55.377Z" },
+    { url = "https://files.pythonhosted.org/packages/10/7b/62394220049c6b84b80b72ab1d6c4a4d0dc5c0e091ca51f75b07ce4d6fda/alpha93_stubs-1.2.3-py3-none-any.whl", hash = "sha256:c3059c3ccc8c881981d78151a3a46630aaa663dffa19a358672a94fc05389276", size = 3010, upload-time = "2026-09-25T06:42:18.502Z" },
 ]
 
 [[package]]

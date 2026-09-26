@@ -194,16 +194,26 @@ class Host(ApplicationRoute[HostMixin]):
     def __eq__(self, other: object) -> bool:
         ...
 
-class Routable(ASGIAppType, Routes,
+class Routable(
     RouteAttachMixin,
     WebSocketRouteAttachMixin,
     MountMixin,
-    HostMixin, ABC):
+    HostMixin,
+    ABC,
+    ASGIAppType,
+    Routes
+):
     @abstractmethod
     def url_path_for(self, name: str, /, **path_params: Any) -> URLPath:
         ...
 
 class Router(Routable):
+    routes: list[BaseRoute]
+    redirect_slashes: bool
+    default: ASGIApp
+    lifespan_context: Lifespan[Any]
+    middleware_stack: ASGIApp
+
     def __init__(
         self,
         routes: Sequence[BaseRoute] | None = ...,

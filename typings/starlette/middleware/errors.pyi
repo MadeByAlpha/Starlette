@@ -1,15 +1,10 @@
+from typing import Final
 import inspect
 
 from starlette.requests import Request
 from starlette.responses import Response
 from starlette.types import ASGIApp, ExceptionHandler, Receive, Scope, Send
 
-STYLES = ...
-JS = ...
-TEMPLATE = ...
-FRAME_TEMPLATE = ...
-LINE = ...
-CENTER_LINE = ...
 class ServerErrorMiddleware:
     """
     Handles returning 500 responses when a server error occurs.
@@ -21,6 +16,11 @@ class ServerErrorMiddleware:
     else up, so that unhandled exceptions anywhere in the stack
     always result in an appropriate 500 response.
     """
+
+    app: Final[ASGIApp]
+    handler: Final[ExceptionHandler | None]
+    debug: Final[bool]
+
     def __init__(self, app: ASGIApp, handler: ExceptionHandler | None = ..., debug: bool = ...) -> None:
         ...
 
@@ -30,20 +30,12 @@ class ServerErrorMiddleware:
     def format_line(self, index: int, line: str, frame_lineno: int, frame_index: int) -> str:
         ...
 
-    def generate_frame_html(self, frame: inspect.FrameInfo, is_collapsed: bool) -> str:
-        ...
-
-    def generate_html(self, exc: Exception, limit: int = ...) -> str:
-        ...
-
     def generate_plain_text(self, exc: Exception) -> str:
         ...
 
-    def debug_response(self, request: Request, exc: Exception) -> Response:
+    async def error_response(self, request: Request, exc: Exception) -> Response:
         ...
 
-    def error_response(self, request: Request, exc: Exception) -> Response:
-        ...
-
-
-
+    def generate_frame_html(self, frame: inspect.FrameInfo, is_collapsed: bool) -> str: ...
+    def generate_html(self, exc: Exception, limit: int = ...) -> str: ...
+    async def debug_response(self, request: Request, exc: Exception) -> Response: ...

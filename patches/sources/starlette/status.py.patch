@@ -1,0 +1,12 @@
+diff --git a/starlette/status.py b/starlette/status.py
+index 202b6b5..4b945f3 100644
+--- a/starlette/status.py
++++ b/starlette/status.py
+@@ -10,6 +10,7 @@ from __future__ import annotations
+ 
+ import warnings
+ 
++# noinspection unresolved-references
+ from starlette.exceptions import StarletteDeprecationWarning
+ 
+ __all__ = [

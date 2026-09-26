@@ -1,6 +1,6 @@
 [project]
 name = "starlette-minimal"
-version = "0.1.0"
+version = "1.6.0"
 authors = [
     { name = "Alpha", email = "dev@alpha93.kr" }
 ]
@@ -46,13 +46,11 @@ work-exclude = [
     "benchmarks/",
     "docs/",
     "scripts/",
-    "starlette/middleware/errors.py",
     "starlette/middleware/sessions.py",
     "starlette/middleware/wsgi.py",
     "starlette/config.py",
     "starlette/endpoints.py",
     "starlette/schemas.py",
-    "starlette/status.py",
     "starlette/templating.py",
     "starlette/testclient.py",
     "tests/",
