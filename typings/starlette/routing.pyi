@@ -208,7 +208,6 @@ class Routable(
         ...
 
 class Router(Routable):
-    routes: list[BaseRoute]
     redirect_slashes: bool
     default: ASGIApp
     lifespan_context: Lifespan[Any]

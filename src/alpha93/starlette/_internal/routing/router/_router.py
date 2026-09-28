@@ -33,7 +33,9 @@ class _DefaultLifespan:
 
 
 class Router(Routable):
-    routes: list[BaseRoute]
+    @property
+    def routes(self) -> list[BaseRoute]:
+        return self.__routes
 
     def __init__(
         self,
@@ -47,7 +49,7 @@ class Router(Routable):
         middleware: Sequence[Middleware] | None = None,
         max_body_size: int | None = None,
     ) -> None:
-        self.routes = [] if routes is None else list(routes)
+        self.__routes = [] if routes is None else list(routes)
         self.redirect_slashes = redirect_slashes
         self.default = self.not_found if default is None else default
 
@@ -160,7 +162,7 @@ class Router(Routable):
                 partial_scope = child_scope
 
         if partial is not None:
-            #  Handle partial matches. These are cases where an endpoint is
+            # Handle partial matches. These are cases where an endpoint is
             # able to handle the request, but is not a preferred option.
             # We use this in particular to deal with "405 Method Not Allowed".
             scope.update(partial_scope)

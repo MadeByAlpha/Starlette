@@ -48,7 +48,7 @@ class Mount(ApplicationRoute[MountMixin]):
         if app is not None:
             self._base_app: ASGIApp = app
         else:
-            self._base_app = Router(routes=routes)
+            self._base_app = typed[Router](Router.__init__)(routes=routes)
         self.app = self._base_app
         if middleware is not None:
             for cls, args, kwargs in reversed(middleware):
