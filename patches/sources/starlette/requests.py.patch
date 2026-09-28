@@ -1,0 +1,131 @@
+diff --git a/starlette/requests.py b/starlette/requests.py
+index d4f3f4b..3f5333d 100644
+--- a/starlette/requests.py
++++ b/starlette/requests.py
+@@ -1,39 +1,38 @@
+ from __future__ import annotations
+ 
+ import json
+-import sys
+-from collections.abc import AsyncGenerator, Iterator, Mapping
++from collections.abc import Mapping
+ from http import cookies as http_cookies
+-from typing import TYPE_CHECKING, Any, Generic, NoReturn, cast
++from typing import TYPE_CHECKING, Any
+ 
+ import anyio
++from alpha93.commons.types import any_object
+ 
+-from starlette._utils import AwaitableOrContextManager, AwaitableOrContextManagerWrapper
++from starlette._utils import AwaitableOrContextManagerWrapper
+ from starlette.datastructures import URL, Address, FormData, Headers, QueryParams, State
+ from starlette.exceptions import HTTPException
+-from starlette.formparsers import FormParser, MultiPartException, MultiPartParser
+-from starlette.types import Message, Receive, Scope, Send
+ 
+-if TYPE_CHECKING:
+-    from python_multipart.multipart import parse_options_header
++if __debug__ and TYPE_CHECKING:
++    from collections.abc import Iterator
++    from typing import NoReturn
+ 
++    from starlette._utils import AwaitableOrContextManager
+     from starlette.applications import Starlette
+-    from starlette.middleware.sessions import Session
++    from starlette.formparsers import FormParser, MultiPartException, MultiPartParser
+     from starlette.routing import Router
++    from starlette.types import Message, Receive, Scope, Send
++    parse_options_header = None
+ else:
+     try:
+-        try:
+-            from python_multipart.multipart import parse_options_header
+-        except ModuleNotFoundError:  # pragma: no cover
+-            from multipart.multipart import parse_options_header
++        from .formparsers import FormParser, MultiPartException, MultiPartParser
++
++        # try:
++        #     from python_multipart.multipart import parse_options_header
++        # except ModuleNotFoundError:  # pragma: no cover
++        #     from multipart.multipart import parse_options_header
+     except ModuleNotFoundError:  # pragma: no cover
+         parse_options_header = None
+ 
+-if sys.version_info >= (3, 13):  # pragma: no cover
+-    from typing import TypeVar
+-else:  # pragma: no cover
+-    from typing_extensions import TypeVar
+-
+ SERVER_PUSH_HEADERS_TO_COPY = {
+     "accept",
+     "accept-encoding",
+@@ -74,10 +73,7 @@ class ClientDisconnect(Exception):
+     pass
+ 
+ 
+-StateT = TypeVar("StateT", bound=Mapping[str, Any] | State, default=State)
+-
+-
+-class HTTPConnection(Mapping[str, Any], Generic[StateT]):
++class HTTPConnection[StateT: Mapping[str, Any] = State](Mapping[str, Any]):
+     """
+     A base class for incoming HTTP connections, that is used to provide
+     any functionality that is common to both `Request` and `WebSocket`.
+@@ -192,8 +188,8 @@ class HTTPConnection(Mapping[str, Any], Generic[StateT]):
+             self.scope.setdefault("state", {})
+             # Create a state instance with a reference to the dict in which it should
+             # store info
+-            self._state = State(self.scope["state"])
+-        return cast(StateT, self._state)
++            self._state = any_object(State)(self.scope["state"])
++        return self._state
+ 
+     def url_for(self, name: str, /, **path_params: Any) -> URL:
+         url_path_provider: Router | Starlette | None = self.scope.get("router") or self.scope.get("app")
+@@ -211,7 +207,7 @@ async def empty_send(message: Message) -> NoReturn:
+     raise RuntimeError("Send channel has not been made available")
+ 
+ 
+-class Request(HTTPConnection[StateT]):
++class Request[StateT: Mapping[str, Any] = State](HTTPConnection[StateT]):
+     _form: FormData | None
+ 
+     def __init__(self, scope: Scope, receive: Receive = empty_receive, send: Send = empty_send):
+@@ -225,13 +221,13 @@ class Request(HTTPConnection[StateT]):
+ 
+     @property
+     def method(self) -> str:
+-        return cast(str, self.scope["method"])
++        return self.scope["method"]
+ 
+     @property
+     def receive(self) -> Receive:
+         return self._receive
+ 
+-    async def stream(self) -> AsyncGenerator[bytes, None]:
++    async def stream(self):
+         if hasattr(self, "_body"):
+             yield self._body
+             yield b""
+@@ -268,8 +264,8 @@ class Request(HTTPConnection[StateT]):
+     async def _get_form(
+         self,
+         *,
+-        max_files: int | float = 1000,
+-        max_fields: int | float = 1000,
++        max_files: float = 1000,
++        max_fields: float = 1000,
+         max_part_size: int = 1024 * 1024,
+     ) -> FormData:
+         if self._form is None:  # pragma: no branch
+@@ -313,8 +309,8 @@ class Request(HTTPConnection[StateT]):
+     def form(
+         self,
+         *,
+-        max_files: int | float = 1000,
+-        max_fields: int | float = 1000,
++        max_files: float = 1000,
++        max_fields: float = 1000,
+         max_part_size: int = 1024 * 1024,
+     ) -> AwaitableOrContextManager[FormData]:
+         return AwaitableOrContextManagerWrapper(

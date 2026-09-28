@@ -33,6 +33,8 @@ class _DefaultLifespan:
 
 
 class Router(Routable):
+    routes: list[BaseRoute]
+
     def __init__(
         self,
         routes: Sequence[BaseRoute] | None = None,

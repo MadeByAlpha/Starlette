@@ -2,7 +2,7 @@ import functools
 import inspect
 from abc import ABC
 
-from alpha93.commons.types import any_object, constructor
+from alpha93.commons.types import any_object, constructor, typed
 
 from starlette._exception_handler import wrap_app_handling_exceptions
 from starlette._utils import get_route_path, is_async_callable
@@ -40,7 +40,7 @@ class RouteAttachMixin(RouterMixin, ABC):
         name: str | None = None,
         include_in_schema: bool = True,
     ) -> None:  # pragma: no cover
-        route = constructor[Route](Route.__init__)(
+        route = typed[Route](Route.__init__)(
             path,
             endpoint=endpoint,
             methods=methods,
@@ -189,7 +189,7 @@ class WebSocketRouteAttachMixin(RouterMixin, ABC):
         endpoint: Callable[[WebSocket], Awaitable[None]],
         name: str | None = None,
     ) -> None:  # pragma: no cover
-        route = constructor[WebSocketRoute](WebSocketRoute.__init__)(
+        route = typed[WebSocketRoute](WebSocketRoute.__init__)(
             path, endpoint=endpoint, name=name
         )
         self.routes.append(route)

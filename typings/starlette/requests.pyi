@@ -1,5 +1,5 @@
 from collections.abc import AsyncGenerator, Iterator, Mapping
-from typing import TYPE_CHECKING, Any, Generic, NoReturn, TypeVar
+from typing import TYPE_CHECKING, Any, Generic, NoReturn, TypeVar, Literal
 
 from starlette._utils import AwaitableOrContextManager
 from starlette.datastructures import URL, Address, FormData, Headers, QueryParams, State
@@ -26,6 +26,14 @@ class HTTPConnection[StateT: Mapping[str, Any] = State](Mapping[str, Any]):
     A base class for incoming HTTP connections, that is used to provide
     any functionality that is common to both `Request` and `WebSocket`.
     """
+    scope: Scope
+    _url: URL
+    _base_url: URL
+    _query_params: QueryParams
+    _cookies: dict[str, str]
+    _headers: Headers
+    _state: StateT
+
     def __init__(self, scope: Scope, receive: Receive | None = ...) -> None:
         ...
 
@@ -98,6 +106,12 @@ async def empty_send(message: Message) -> NoReturn:
     ...
 
 class Request[StateT: Mapping[str, Any] = State](HTTPConnection[StateT]):
+    _receive: Receive
+    _send: Send
+    _stream_consumed: bool
+    _is_disconnected: bool
+    _body: bytes
+    _json: Any
     _form: FormData | None
     def __init__(self, scope: Scope, receive: Receive = ..., send: Send = ...) -> None:
         ...

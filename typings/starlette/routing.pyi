@@ -199,9 +199,9 @@ class Routable(
     WebSocketRouteAttachMixin,
     MountMixin,
     HostMixin,
+    Routes,
     ABC,
     ASGIAppType,
-    Routes
 ):
     @abstractmethod
     def url_path_for(self, name: str, /, **path_params: Any) -> URLPath:

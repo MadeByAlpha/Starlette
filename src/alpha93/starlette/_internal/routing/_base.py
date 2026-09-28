@@ -127,7 +127,7 @@ class BaseRoute(ABC):
 
 
 class Routes(ABC):
-    @abstractmethod
     @property
+    @abstractmethod
     def routes(self) -> list[BaseRoute]:
         ...

@@ -1,5 +1,5 @@
 import enum
-from collections.abc import AsyncIterator, Iterable, Mapping
+from collections.abc import AsyncIterator, Callable, Iterable, Mapping
 from typing import Any
 
 from starlette.datastructures import State
@@ -15,6 +15,9 @@ class WebSocketState(enum.Enum):
 
 
 class WebSocketDisconnect(Exception):
+    code: int
+    reason: str
+
     def __init__(self, code: int = ..., reason: str | None = ...) -> None:
         ...
 
@@ -26,6 +29,12 @@ class WebSocketDisconnected(RuntimeError):
 
 
 class WebSocket[StateT: Mapping[str, Any] = State](HTTPConnection[StateT]):
+    _send: Send
+    _receive: Receive
+    client_state: WebSocketState
+    application_state: WebSocketState
+    _raise_on_disconnect: Callable[[Message], None]
+
     def __init__(self, scope: Scope, receive: Receive, send: Send) -> None:
         ...
 
@@ -77,6 +86,9 @@ class WebSocket[StateT: Mapping[str, Any] = State](HTTPConnection[StateT]):
 
 
 class WebSocketClose:
+    code: int
+    reason: str
+
     def __init__(self, code: int = ..., reason: str | None = ...) -> None:
         ...
 

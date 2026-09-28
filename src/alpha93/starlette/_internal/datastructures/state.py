@@ -1,9 +1,11 @@
+from collections.abc import Mapping
+from typing import Any
+
 if __debug__ and __import__("typing").TYPE_CHECKING:
     from collections.abc import Iterator
-    from typing import Any
 
 
-class State:
+class State(Mapping[str, Any]):
     """
     An object that can be used to store arbitrary state.
 

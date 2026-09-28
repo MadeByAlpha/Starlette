@@ -318,36 +318,37 @@ index 98451e2..3c63b85 100644
  ENFORCE_DOMAIN_WILDCARD = "Domain wildcard patterns must be like '*.example.com'."
  
 diff --git a/starlette/requests.py b/starlette/requests.py
-index d4f3f4b..24bba07 100644
+index 3f5333d..6801dab 100644
 --- a/starlette/requests.py
 +++ b/starlette/requests.py
-@@ -8,18 +8,18 @@ from typing import TYPE_CHECKING, Any, Generic, NoReturn, cast
- 
+@@ -8,19 +8,19 @@ from typing import TYPE_CHECKING, Any
  import anyio
+ from alpha93.commons.types import any_object
  
--from starlette._utils import AwaitableOrContextManager, AwaitableOrContextManagerWrapper
+-from starlette._utils import AwaitableOrContextManagerWrapper
 -from starlette.datastructures import URL, Address, FormData, Headers, QueryParams, State
 -from starlette.exceptions import HTTPException
--from starlette.formparsers import FormParser, MultiPartException, MultiPartParser
--from starlette.types import Message, Receive, Scope, Send
-+from ._utils import AwaitableOrContextManager, AwaitableOrContextManagerWrapper
++from ._utils import AwaitableOrContextManagerWrapper
 +from .datastructures import URL, Address, FormData, Headers, QueryParams, State
 +from .exceptions import HTTPException
-+from .formparsers import FormParser, MultiPartException, MultiPartParser
-+from .types import Message, Receive, Scope, Send
  
- if TYPE_CHECKING:
-     from python_multipart.multipart import parse_options_header
+ if __debug__ and TYPE_CHECKING:
+     from collections.abc import Iterator
+     from typing import NoReturn
  
+-    from starlette._utils import AwaitableOrContextManager
 -    from starlette.applications import Starlette
--    from starlette.middleware.sessions import Session
+-    from starlette.formparsers import FormParser, MultiPartException, MultiPartParser
 -    from starlette.routing import Router
+-    from starlette.types import Message, Receive, Scope, Send
++    from ._utils import AwaitableOrContextManager
 +    from .applications import Starlette
-+    from .middleware.sessions import Session
++    from .formparsers import FormParser, MultiPartException, MultiPartParser
 +    from .routing import Router
++    from .types import Message, Receive, Scope, Send
+     parse_options_header = None
  else:
      try:
-         try:
 diff --git a/starlette/responses.py b/starlette/responses.py
 index 47b698e..8d1fa6b 100644
 --- a/starlette/responses.py
@@ -458,19 +459,19 @@ index b767ae1..7aa7135 100644
  AppType = TypeVar("AppType")
  
 diff --git a/starlette/websockets.py b/starlette/websockets.py
-index 3ab709a..34b9e5a 100644
+index badd980..37dd6d1 100644
 --- a/starlette/websockets.py
 +++ b/starlette/websockets.py
-@@ -5,9 +5,9 @@ import json
- from collections.abc import AsyncIterator, Iterable
- from typing import Any, cast
+@@ -9,9 +9,9 @@ if __debug__ and __import__("typing").TYPE_CHECKING:
+     from collections.abc import Iterable, Mapping
+     from typing import Any
  
--from starlette.requests import HTTPConnection, StateT
--from starlette.responses import Response
--from starlette.types import Message, Receive, Scope, Send
-+from .requests import HTTPConnection, StateT
-+from .responses import Response
-+from .types import Message, Receive, Scope, Send
+-    from starlette.datastructures import State
+-    from starlette.responses import Response
+-    from starlette.types import Message, Receive, Scope, Send
++    from .datastructures import State
++    from .responses import Response
++    from .types import Message, Receive, Scope, Send
  
  
  class WebSocketState(enum.Enum):

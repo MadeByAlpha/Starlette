@@ -1,0 +1,77 @@
+diff --git a/starlette/websockets.py b/starlette/websockets.py
+index 3ab709a..badd980 100644
+--- a/starlette/websockets.py
++++ b/starlette/websockets.py
+@@ -2,12 +2,16 @@ from __future__ import annotations
+ 
+ import enum
+ import json
+-from collections.abc import AsyncIterator, Iterable
+-from typing import Any, cast
+ 
+-from starlette.requests import HTTPConnection, StateT
+-from starlette.responses import Response
+-from starlette.types import Message, Receive, Scope, Send
++from .requests import HTTPConnection
++
++if __debug__ and __import__("typing").TYPE_CHECKING:
++    from collections.abc import Iterable, Mapping
++    from typing import Any
++
++    from starlette.datastructures import State
++    from starlette.responses import Response
++    from starlette.types import Message, Receive, Scope, Send
+ 
+ 
+ class WebSocketState(enum.Enum):
+@@ -23,7 +27,7 @@ class WebSocketDisconnect(Exception):
+         self.reason = reason or ""
+ 
+ 
+-class WebSocket(HTTPConnection[StateT]):
++class WebSocket[StateT: Mapping[str, Any] = State](HTTPConnection[StateT]):
+     def __init__(self, scope: Scope, receive: Receive, send: Send) -> None:
+         super().__init__(scope)
+         assert scope["type"] == "websocket"
+@@ -118,14 +122,14 @@ class WebSocket(HTTPConnection[StateT]):
+             raise RuntimeError('WebSocket is not connected. Need to call "accept" first.')
+         message = await self.receive()
+         self._raise_on_disconnect(message)
+-        return cast(str, message["text"])
++        return message["text"]
+ 
+     async def receive_bytes(self) -> bytes:
+         if self.application_state != WebSocketState.CONNECTED:
+             raise RuntimeError('WebSocket is not connected. Need to call "accept" first.')
+         message = await self.receive()
+         self._raise_on_disconnect(message)
+-        return cast(bytes, message["bytes"])
++        return message["bytes"]
+ 
+     async def receive_json(self, mode: str = "text") -> Any:
+         if mode not in {"text", "binary"}:
+@@ -141,21 +145,21 @@ class WebSocket(HTTPConnection[StateT]):
+             text = message["bytes"].decode("utf-8")
+         return json.loads(text)
+ 
+-    async def iter_text(self) -> AsyncIterator[str]:
++    async def iter_text(self):
+         try:
+             while True:
+                 yield await self.receive_text()
+         except WebSocketDisconnect:
+             pass
+ 
+-    async def iter_bytes(self) -> AsyncIterator[bytes]:
++    async def iter_bytes(self):
+         try:
+             while True:
+                 yield await self.receive_bytes()
+         except WebSocketDisconnect:
+             pass
+ 
+-    async def iter_json(self) -> AsyncIterator[Any]:
++    async def iter_json(self):
+         try:
+             while True:
+                 yield await self.receive_json()

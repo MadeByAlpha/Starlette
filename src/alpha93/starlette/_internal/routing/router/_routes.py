@@ -1,10 +1,11 @@
 from abc import ABC
 
-from alpha93.commons.types import constructor
+from alpha93.commons.types import typed
 
 from starlette._utils import get_route_path
 from starlette.datastructures import Headers, URLPath
 
+from .._base import Routes
 from .._match import Match, NoMatchFound
 from .._mixin import AttachableRoute, RouterMixin
 
@@ -15,12 +16,12 @@ if __debug__ and __import__("typing").TYPE_CHECKING:
     from starlette.middleware import Middleware
     from starlette.types import ASGIApp, Receive, Scope, Send
 
-    from .._base import BaseRoute, Routes
+    from .._base import BaseRoute
 
 
 class MountMixin(RouterMixin, ABC):
     def mount(self, path: str, app: ASGIApp, name: str | None = None) -> None:  # pragma: no cover
-        route = constructor[Mount](Mount.__init__)(path, app=app, name=name)
+        route = typed[Mount](Mount.__init__)(path, app=app, name=name)
         self.routes.append(route)
 
 
@@ -136,7 +137,7 @@ class Mount(ApplicationRoute[MountMixin]):
 
 class HostMixin(RouterMixin, ABC):
     def host(self, host: str, app: ASGIApp, name: str | None = None) -> None:  # pragma: no cover
-        route = constructor[Host](Host.__init__)(host, app=app, name=name)
+        route = typed[Host](Host.__init__)(host, app=app, name=name)
         self.routes.append(route)
 
 class Host(ApplicationRoute[HostMixin]):

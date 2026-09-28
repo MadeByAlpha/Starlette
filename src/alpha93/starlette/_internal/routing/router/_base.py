@@ -11,13 +11,13 @@ if __debug__ and __import__("typing").TYPE_CHECKING:
 
 
 class Routable(
-    Routes,
     RouteAttachMixin,
     WebSocketRouteAttachMixin,
     MountMixin,
     HostMixin,
-    ABC
-):  # type: ignore[ty:inconsistent-mro]
+    Routes,
+    ABC,
+):
     @abstractmethod
     def url_path_for(self, name: str, /, **path_params: Any) -> URLPath:
         ...
